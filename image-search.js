@@ -38,4 +38,59 @@ function populateDatabase(n=100){
     }
 }
 
+function requestVisionAPI(imageUrl, callback){
+    const request = require('request');
+    const subscriptionKey = '79a96b2fae6747b791552e34e5678f96';
+    const uriBase =
+    'https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/analyze';
+    const params = {
+        'visualFeatures': 'Categories,Description,Color,Tags,Faces,Adult,ImageType',
+        'details': 'Celebrities,Landmarks',
+        'language': 'en'
+    };
+
+    const options = {
+        uri: uriBase,
+        qs: params,
+        body: '{"url": ' + '"' + imageUrl + '"}',
+        headers: {
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key' : subscriptionKey
+        }
+    };
+
+    request.post(options, (error, response, body) => {
+        if (error) {
+            console.error('Error: ', error);
+            return
+        }
+        if(response.statusCode == 200){
+            let jsonResponse = JSON.parse(body);
+            callback(jsonResponse)
+            return
+        }
+        else {
+            console.error('Request failed', response.statusCode)
+        }
+    });
+}
+
+function updateDatabaseWithVisionTags(){
+    var images = db.get('images').value()
+    for (let i=0; i < images.length; i++){
+        setTimeout(
+            function(){
+                var jsonResponse = requestVisionAPI(
+                    images[i].url,
+                    function(json){
+                        db.get('images').find({'id':images[i].id}).assign({'msVisionTags': json}).write()
+                        console.log('Succesfully updated vision tags for', images[i].id, i, '/', images.length)
+                    });
+            }, (i+1)*5000);
+    }
+
+}
+
+
+updateDatabaseWithVisionTags()
 // populateDatabase()
