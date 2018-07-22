@@ -1,9 +1,32 @@
 function convertToGalleryList(images){
   var galleryList = []
   for (var i = 0; i < images.length; i++) {
-    galleryList.push({
-      src: images[i].large_url,
-      srct: images[i].url})
+    var db_img = images[i]
+    var imgData = {
+      srct: db_img.url,
+      kind: 'image',
+      title: "" + db_img['id']}
+
+    if (db_img.large_url){
+      imgData.src = db_img.large_url
+    }
+    else{
+      imgData.src = db_img.url
+    }
+
+    if (db_img.msVisionTags){
+      imgData.imgtHeight = db_img.msVisionTags.metadata.height
+      imgData.imgtWidth = db_img.msVisionTags.metadata.width
+
+      try{
+        var caption = db_img.msVisionTags.description.captions[0].text
+        imgData.description = caption[0].toUpperCase() + caption.substring(1) + '.'
+      }
+      catch (err){
+        
+      }
+    }
+    galleryList.push(imgData)
   }
 
   return galleryList
@@ -29,21 +52,19 @@ function createNanoGallery(images){
 
 function createFuse(images){
     var fuse_search_keys = [
-      'msVisionTags.tags.name',
-      'msVisionTags.description.tags',
-      'msVisionTags.captions.text',
-      'msVisionTags.color.dominantColors',
-      'url'
+    {name: 'msVisionTags.tags.name', weight: 0.3},
+    {name: 'msVisionTags.captions.text', weight: 0.4},
+    {name: 'msVisionTags.color.dominantColors', weight: 0.3}
     ]
 
     var fuse_options = {
       shouldSort: true,
-      threshold: 0.6,
+      threshold: 0.01,
       location: 0,
+      tokenize: true,
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      includeScore: true,
       keys: fuse_search_keys
     }
     return new Fuse(all_images, fuse_options)
@@ -54,12 +75,32 @@ function updateNanoGallery(new_images){
   createNanoGallery(new_images)
 }
 
+function getSearchInput(){
+  return $.trim($("#search-box").val())
+}
+
 $(document).ready(function () {
   // query DB
   $.getJSON("db.json", function(data) {
-
     all_images = data.images
     createNanoGallery(all_images)
     fuse = createFuse(all_images)
   }); 
+
+  var oldSearchValue = getSearchInput()
+
+  $("#search-box").bind('input', function(e) {
+    var searchValue = getSearchInput()
+    if (searchValue != oldSearchValue){
+      if (searchValue == ""){
+        updateNanoGallery(all_images)
+      }
+      else {
+        var results = fuse.search(searchValue)
+        updateNanoGallery(results)
+      }
+      oldSearchValue = searchValue
+    }
+
+  });
 });
