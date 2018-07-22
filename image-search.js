@@ -40,7 +40,9 @@ function populateDatabase(n=100){
 
 function requestVisionAPI(imageUrl, callback){
     const request = require('request');
-    const subscriptionKey = '79a96b2fae6747b791552e34e5678f96';
+    const myKey = config.MY_KEY;
+    const secretkey = config.SECRET_KEY;
+    const subscriptionKey = myKey;
     const uriBase =
     'https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/analyze';
     const params = {
