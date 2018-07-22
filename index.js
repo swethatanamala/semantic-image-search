@@ -10,7 +10,7 @@ function convertToGalleryList(images){
 }
 
 function createNanoGallery(images){
-  jQuery("#nanogallery2").nanogallery2( {
+  $("#nanogallery2").nanogallery2({
     <!-- ### gallery settings ### -->
     "itemsBaseURL": '',
     "thumbnailWidth": "auto",
@@ -23,26 +23,43 @@ function createNanoGallery(images){
     "thumbnailHoverEffect2": "imageScaleIn80|labelAppear75",
 
     <!-- ### gallery content ### -->
-    items: convertToGalleryList(images)
+    'items': convertToGalleryList(images)
   });
 }
 
-jQuery(document).ready(function () {
-  // query DB
-  $.getJSON("db.json", function(data) {
-    var options = {
+function createFuse(images){
+    var fuse_search_keys = [
+      'msVisionTags.tags.name',
+      'msVisionTags.description.tags',
+      'msVisionTags.captions.text',
+      'msVisionTags.color.dominantColors',
+      'url'
+    ]
+
+    var fuse_options = {
       shouldSort: true,
       threshold: 0.6,
       location: 0,
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: ["site", "copyright"]
+      includeScore: true,
+      keys: fuse_search_keys
     }
-    all_images = data.images
-    fuse = new Fuse(all_images, options)
+    return new Fuse(all_images, fuse_options)
+}
 
+function updateNanoGallery(new_images){
+  $("#nanogallery2").nanogallery2('destroy')
+  createNanoGallery(new_images)
+}
+
+$(document).ready(function () {
+  // query DB
+  $.getJSON("db.json", function(data) {
+
+    all_images = data.images
     createNanoGallery(all_images)
-  });
-  
+    fuse = createFuse(all_images)
+  }); 
 });

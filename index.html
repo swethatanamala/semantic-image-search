@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Semantic Image Search</title>
+    <!-- Bootstrap 4 -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"></script>
@@ -10,12 +11,31 @@
     <!-- nanogallery2 -->
     <link  href="https://unpkg.com/nanogallery2@2.2.0/dist/css/nanogallery2.min.css" rel="stylesheet" type="text/css">
     <script  type="text/javascript" src="https://unpkg.com/nanogallery2@2.2.0/dist/jquery.nanogallery2.min.js"></script>
+
+
+    <style>
+    body{
+        font-family: monospace;
+    }
+
+    #search-box{
+        width: 65%;
+        margin: 2em;
+        text-align: center;
+    }
+
+    </style>
 </head>
 <body>
     
 
     <div class="container">
-        <h1>Semantic Image Search</h1>
+        <h1 class="text-center">Semantic Image Search</h1>
+
+        <center>
+            <input id='search-box' class="form-control form-control-lg" type="text" placeholder="Search for Images">
+        </center>
+        
 
         <div id="nanogallery2"></div>
     </div>
