@@ -94,5 +94,5 @@ function updateDatabaseWithVisionTags(){
 }
 
 
-updateDatabaseWithVisionTags()
+// updateDatabaseWithVisionTags()
 // populateDatabase()

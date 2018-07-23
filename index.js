@@ -53,7 +53,7 @@ function createNanoGallery(images){
 function createFuse(images){
     var fuse_search_keys = [
     {name: 'msVisionTags.tags.name', weight: 0.3},
-    {name: 'msVisionTags.captions.text', weight: 0.4},
+    {name: 'msVisionTags.description.captions.text', weight: 0.4},
     {name: 'msVisionTags.color.dominantColors', weight: 0.3}
     ]
 
