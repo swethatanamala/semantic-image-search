@@ -1,1 +1,2 @@
 # Semantic-Image-Search
+This project was created using a very few API requests. The project is hosted [here](https://swethatanamala.github.io/semantic-image-search/) and more details regarding this is available in this [blog](https://swethatanamala.github.io/2018/07/26/semantic-image-search-using-apis/).

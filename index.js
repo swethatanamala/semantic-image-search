@@ -67,7 +67,7 @@ function createFuse(images){
       minMatchCharLength: 1,
       keys: fuse_search_keys
     }
-    return new Fuse(all_images, fuse_options)
+    return new Fuse(images, fuse_options)
 }
 
 function updateNanoGallery(new_images){
